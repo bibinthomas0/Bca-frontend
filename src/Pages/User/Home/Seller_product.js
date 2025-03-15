@@ -1,0 +1,275 @@
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  VStack,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  useToast,
+  Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  Select,
+} from "@chakra-ui/react";
+import { useState,useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
+import apiClient from "../Auth/AxiosInstance"
+
+const Sidebar = ({ selected, onSelect }) => {
+  const navigate = useNavigate();
+  const menuItems = [
+    { label: "See Orders", path: "/seller/home" },
+    { label: "Product Listing", path: "/seller/product" },
+    { label: "Enquiries", path: "/seller/enquiries" },
+  ];
+
+  const handleSelect = (item) => {
+    onSelect(item.label);
+    navigate(item.path);
+  };
+
+  return (
+    <VStack w="250px" bg="white" h="100vh" p={4} spacing={6} align="stretch">
+      {menuItems.map((item) => (
+        <Box
+          key={item.label}
+          p={3}
+          bg={selected === item.label ? "white" : "transparent"}
+          borderRadius="md"
+          cursor="pointer"
+          onClick={() => handleSelect(item)}
+          _hover={{ bg: "white" }}
+        >
+          {item.label}
+        </Box>
+      ))}
+    </VStack>
+  );
+};
+
+
+
+const SellerProduct = () => {
+  const [selected, setSelected] = useState("Product Listing");
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewProduct, setViewProduct] = useState(null);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [updateProduct, setUpdateProduct] = useState(null);
+  const [newProduct, setNewProduct] = useState({
+    title: "",
+    description: "",
+    price: "",
+    stock: "",
+    image: "",
+  });
+
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  useEffect(() => {
+    fetchCategories();
+    fetchProducts();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await apiClient.get("/api/categories/");
+      setCategories(response.data);
+    } catch (error) {
+      toast({ title: "Failed to load categories", status: "error" });
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await apiClient.get("/api/products/");
+      setProducts(response.data);
+      console.log(response.data)
+    } catch (error) {
+      toast({ title: "Failed to load products", status: "error" });
+    }
+  };
+
+  const addCategory = async () => {
+    try {
+      const response = await apiClient.post("/api/categories/", { name: categoryName });
+      setCategories([...categories, response.data]);
+      toast({ title: "Category added successfully", status: "success" });
+      setIsCategoryModalOpen(false);
+    } catch (error) {
+      toast({ title: "Failed to add category", status: "error" });
+    }
+  };
+
+  const addProduct = async () => {
+    try {
+      const response = await apiClient.post("/api/products/", newProduct);
+      setProducts([...products, response.data]);
+      toast({ title: "Product added successfully", status: "success" });
+      setIsProductModalOpen(false);
+    } catch (error) {
+      toast({ title: "Failed to add product", status: "error" });
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      await axios.delete(`/api/products/${id}/`);
+      setProducts(products.filter((product) => product.id !== id));
+      toast({ title: "Product deleted successfully", status: "success" });
+      setIsViewModalOpen(false);
+    } catch (error) {
+      toast({ title: "Failed to delete product", status: "error" });
+    }
+  };
+
+  const handleUpdateProduct = async () => {
+    try {
+      await apiClient.put(`/api/products/${updateProduct.id}/`, updateProduct);
+      fetchProducts();
+      toast({ title: "Product updated successfully", status: "success" });
+      setIsUpdateModalOpen(false);
+    } catch (error) {
+      toast({ title: "Failed to update product", status: "error" });
+    }
+  };
+
+  return (
+    <Flex h="100vh" bg="white" color="black">
+    <Sidebar selected={selected} onSelect={setSelected} />
+
+    <Box flex="1" p={6}>
+      <Flex justify="space-between" mb={4}>
+        <Button colorScheme="blue" onClick={() => setIsCategoryModalOpen(true)}>
+          Add Category
+        </Button>
+        <Button colorScheme="blue" onClick={() => setIsProductModalOpen(true)}>
+          Add Product
+        </Button>
+        <Menu>
+          <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
+          <MenuList>
+            <MenuItem>View Profile</MenuItem>
+            <MenuItem>Logout</MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+
+      <Text fontSize="2xl" mb={6}>Products</Text>
+
+      <VStack spacing={4} align="stretch">
+        {products.map((product) => (
+          <HStack key={product.id} p={4} borderWidth="1px" borderRadius="lg" justify="space-between">
+            <Image boxSize="50px" src={product.image} alt={product.title} />
+            <Text>{product.title}</Text>
+            <Text>{product.category_name}</Text>
+            <Text>{product.stock}</Text>
+            <Text>${product.price}</Text>
+            <Button colorScheme="blue" onClick={() => { setViewProduct(product); setIsViewModalOpen(true); }}>View More</Button>
+            <Button colorScheme="green" onClick={() => { setUpdateProduct(product); setIsUpdateModalOpen(true); }}>Update</Button>
+          </HStack>
+        ))}
+      </VStack>
+
+      <Modal isOpen={isCategoryModalOpen} onClose={() => setIsCategoryModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Category</ModalHeader>
+          <ModalBody>
+            <Input
+              placeholder="Category Name"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={addCategory}>Create</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isProductModalOpen} onClose={() => setIsProductModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Product</ModalHeader>
+          <ModalBody>
+            <Select placeholder="Select Category" onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+              ))}
+            </Select>
+            <Input placeholder="Title" onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} />
+            <Input placeholder="Description" onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} />
+            <Input placeholder="Price" type="number" onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} />
+            <Input placeholder="Stock" type="number" onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} />
+            <Input placeholder="Image URL" onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })} />
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={addProduct}>Add Product</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+   {/* View More Modal */}
+   <Modal isOpen={isViewModalOpen} onClose={() => setIsViewModalOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Product Details</ModalHeader>
+            <ModalBody>
+              {viewProduct && (
+                <VStack spacing={4}>
+                  <Image boxSize="100px" src={viewProduct.image} alt={viewProduct.title} />
+                  <Text fontSize="lg">{viewProduct.title}</Text>
+                  <Text>{viewProduct.description}</Text>
+                  <Text>Stock: {viewProduct.stock}</Text>
+                  <Text>Price: ${viewProduct.price}</Text>
+                </VStack>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+
+        {/* Update Product Modal */}
+        <Modal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Update Product</ModalHeader>
+            <ModalBody>
+              {updateProduct && (
+                <VStack spacing={4}>
+                  <Input placeholder="Title" value={updateProduct.title} onChange={(e) => setUpdateProduct({ ...updateProduct, title: e.target.value })} />
+                  <Input placeholder="Image URL" value={updateProduct.image} onChange={(e) => setUpdateProduct({ ...updateProduct, image: e.target.value })} />
+                  <Input placeholder="Stock" type="number" value={updateProduct.stock} onChange={(e) => setUpdateProduct({ ...updateProduct, stock: e.target.value })} />
+                  <Input placeholder="Price" type="number" value={updateProduct.price} onChange={(e) => setUpdateProduct({ ...updateProduct, price: e.target.value })} />
+                </VStack>
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" onClick={handleUpdateProduct}>Update</Button>
+              <Button colorScheme="red" onClick={() => deleteProduct(updateProduct.id)}>Delete</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+
+    </Box>
+  </Flex>
+  );
+};
+
+export default SellerProduct;
