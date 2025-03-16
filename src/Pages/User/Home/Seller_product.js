@@ -60,6 +60,10 @@ const Sidebar = ({ selected, onSelect }) => {
 
 
 const SellerProduct = () => {
+const REACT_APP_CLOUDINARY_CLOUD_NAME = "dvlpq6zex";
+const REACT_APP_CLOUDINARY_API_KEY = "819793121816654";
+const REACT_APP_CLOUDINARY_API_SECRET = "o7jvARVAcbb9LCVt2VWz4SDlW7w";
+const REACT_APP_CLOUDINARY_UPLOAD_PRESET = "pafqnehk";
   const [selected, setSelected] = useState("Product Listing");
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -70,6 +74,7 @@ const SellerProduct = () => {
   const [viewProduct, setViewProduct] = useState(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateProduct, setUpdateProduct] = useState(null);
+  const [image, setImage] = useState(null);
   const [newProduct, setNewProduct] = useState({
     title: "",
     description: "",
@@ -116,8 +121,39 @@ const SellerProduct = () => {
     }
   };
 
+  const uploadImage = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+    data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
+    data.append("folder", "Zorpia-posts");
+  
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+      const res = await response.json();
+      console.log(res.secure_url)
+      return res.secure_url; // Return the uploaded image URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
+    }
+  };
+  
   const addProduct = async () => {
     try {
+      if (image) {
+        const uploadedImageUrl = await uploadImage(image);
+        if (uploadedImageUrl) {
+          newProduct.image = uploadedImageUrl; 
+        }
+      }
+  
       const response = await apiClient.post("/api/products/", newProduct);
       setProducts([...products, response.data]);
       toast({ title: "Product added successfully", status: "success" });
@@ -140,6 +176,12 @@ const SellerProduct = () => {
 
   const handleUpdateProduct = async () => {
     try {
+      if (image) {
+        const uploadedImageUrl = await uploadImage(image);
+        if (uploadedImageUrl) {
+          updateProduct.image = uploadedImageUrl; 
+        }
+      }
       await apiClient.put(`/api/products/${updateProduct.id}/`, updateProduct);
       fetchProducts();
       toast({ title: "Product updated successfully", status: "success" });
@@ -217,7 +259,7 @@ const SellerProduct = () => {
             <Input placeholder="Description" onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} />
             <Input placeholder="Price" type="number" onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} />
             <Input placeholder="Stock" type="number" onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} />
-            <Input placeholder="Image URL" onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })} />
+            <Input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={addProduct}>Add Product</Button>
@@ -253,7 +295,7 @@ const SellerProduct = () => {
               {updateProduct && (
                 <VStack spacing={4}>
                   <Input placeholder="Title" value={updateProduct.title} onChange={(e) => setUpdateProduct({ ...updateProduct, title: e.target.value })} />
-                  <Input placeholder="Image URL" value={updateProduct.image} onChange={(e) => setUpdateProduct({ ...updateProduct, image: e.target.value })} />
+                  <Input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
                   <Input placeholder="Stock" type="number" value={updateProduct.stock} onChange={(e) => setUpdateProduct({ ...updateProduct, stock: e.target.value })} />
                   <Input placeholder="Price" type="number" value={updateProduct.price} onChange={(e) => setUpdateProduct({ ...updateProduct, price: e.target.value })} />
                 </VStack>

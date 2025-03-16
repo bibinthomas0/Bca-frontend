@@ -73,7 +73,10 @@ function Login() {
   };
 
 
+const navigateregister = () =>{
 
+  navigate("/register")
+}
 
   return (
     <>
@@ -105,6 +108,15 @@ function Login() {
               onClick={handleLoginSubmit}
             >
               Log In
+            </Button>
+            <Button
+              bg={"blue.400"}
+              width={"60%"}
+              color={"white"}
+              _hover={{ bg: "red.500" }}
+              onClick={navigateregister}
+            >
+              register
             </Button>
           </Stack>
         </Stack>
