@@ -14,6 +14,8 @@ import BuyerOrders from "../Buyer/Buyerorders";
 import BuyerEnquiry from "../Buyer/BuyerEnquiry";
 import SellerEnquiry from "../Home/Sellerenquiry";
 import apiClient from "../Auth/AxiosInstance"
+import Adminsellers from "../Admin/AdminSellers"
+import AdminBuyers from "../Admin/Adminbuyers";
 
 const UserWrapper = () => {
   const navigate = useNavigate();
@@ -45,6 +47,8 @@ const UserWrapper = () => {
         <Route path="/buyer/home" element={<BuyerHomePage />} />
         <Route path="/buyer/cart" element={<BuyerCart />} />
         <Route path="/buyer/orders" element={<BuyerOrders />} />
+        <Route path="/admin/home" element={<Adminsellers />} />
+        <Route path="/admin/buyers" element={<AdminBuyers />} />
         <Route path="/buyer/enquiries" element={<BuyerEnquiry />} />
         <Route path="/seller/home" element={<HomePage />} />
         <Route path="/seller/product" element={<Seller_product />} />

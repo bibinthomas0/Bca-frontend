@@ -70,7 +70,7 @@ const BuyerOrders = () => {
   const handleCancelItem = () => {
     if (!orderItemToCancel) return;
 
-    apiClient.patch(`/api/order-items/${orderItemToCancel.id}/update-status/`, { status: "Cancelled" })
+    apiClient.patch(`/api/order-item/${orderItemToCancel.id}/update-status/`, { status: "Cancelled" })
       .then(response => {
         toast({
           title: "Item Cancelled",
@@ -91,7 +91,15 @@ const BuyerOrders = () => {
           return order;
         }));
       })
-      .catch(error => console.error("Error cancelling order item:", error));
+      .catch(error =>{
+        toast({
+          title: "Item cant be cancelled",
+          description: "",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
       onConfirmClose();
   };
 

@@ -98,6 +98,7 @@ const BuyerCart = () => {
       const response = await apiClient.post("/api/order/create/");
       toast({ title: response.data.message, status: "success", duration: 3000, isClosable: true });
       fetchCart();
+      onClose()
     } catch (error) {
       toast({ title: error.response?.data?.error || "Error creating order", status: "error", duration: 3000, isClosable: true });
     }
