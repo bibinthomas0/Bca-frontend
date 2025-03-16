@@ -165,7 +165,7 @@ const REACT_APP_CLOUDINARY_UPLOAD_PRESET = "pafqnehk";
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`/api/products/${id}/`);
+      await apiClient.delete(`/api/products/${id}/`);
       setProducts(products.filter((product) => product.id !== id));
       toast({ title: "Product deleted successfully", status: "success" });
       setIsViewModalOpen(false);
