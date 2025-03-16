@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { 
-  Box, Button, HStack, Image, Text, Flex, VStack, Menu, MenuItem, MenuButton, MenuList, useToast,useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter
+  Box, Button, HStack, Image, Text, Flex,Input,Stack,Radio,RadioGroup, VStack, Menu, MenuItem, MenuButton, MenuList, useToast,useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import apiClient from '../Auth/AxiosInstance';
@@ -44,7 +44,8 @@ const BuyerCart = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [paymentDetails, setPaymentDetails] = useState({});
   useEffect(() => {
 
 
@@ -154,13 +155,40 @@ const BuyerCart = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Confirm Order</ModalHeader>
+          <ModalHeader>
+            <Image src="https://i.ibb.co/kVPZT0DB/Screenshot-2025-03-16-033115.png" alt="Logo" mb={4} />
+            Select Payment Method
+          </ModalHeader>
           <ModalBody>
-            <Text>Are you sure you want to place this order?</Text>
-            <Text fontSize="lg" fontWeight="bold">Total: ${cart?.total_cart_value.toFixed(2)}</Text>
+            <RadioGroup onChange={setPaymentMethod} value={paymentMethod}>
+              <Stack spacing={4}>
+                <Radio value="upi">UPI</Radio>
+                <Radio value="bank_transfer">Bank Transfer</Radio>
+                <Radio value="card">Card</Radio>
+              </Stack>
+            </RadioGroup>
+            
+            {paymentMethod === "upi" && (
+              <Input mt={4} placeholder="Enter UPI ID" onChange={(e) => setPaymentDetails({ ...paymentDetails, upi: e.target.value })} />
+            )}
+            {paymentMethod === "bank_transfer" && (
+              <>
+                <Input mt={4} placeholder="Account Number" onChange={(e) => setPaymentDetails({ ...paymentDetails, accountNumber: e.target.value })} />
+                <Input mt={2} placeholder="IFSC Code" onChange={(e) => setPaymentDetails({ ...paymentDetails, ifsc: e.target.value })} />
+              </>
+            )}
+            {paymentMethod === "card" && (
+              <>
+                <Input mt={4} placeholder="Card Number" onChange={(e) => setPaymentDetails({ ...paymentDetails, cardNumber: e.target.value })} />
+                <Input mt={2} placeholder="Expiry Date" onChange={(e) => setPaymentDetails({ ...paymentDetails, expiry: e.target.value })} />
+                <Input mt={2} placeholder="CVV" type="password" onChange={(e) => setPaymentDetails({ ...paymentDetails, cvv: e.target.value })} />
+              </>
+            )}
+            
+            <Text fontSize="lg" fontWeight="bold" mt={4}>Total: ${cart?.total_cart_value.toFixed(2)}</Text>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="green" onClick={createOrder}>Confirm Order</Button>
+            <Button colorScheme="green" onClick={createOrder}>Create Payment</Button>
             <Button ml={3} onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
