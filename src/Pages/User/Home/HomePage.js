@@ -13,6 +13,7 @@ const Sidebar = ({ selected, onSelect }) => {
     { label: "See Orders", path: "/seller/home" },
     { label: "Product Listing", path: "/seller/product" },
     { label: "Enquiries", path: "/seller/enquiries" },
+    { label: "Help & Support", path: "/seller/help" },
   ];
 
   const handleSelect = (item) => {
@@ -21,7 +22,7 @@ const Sidebar = ({ selected, onSelect }) => {
   };
 
   return (
-    <VStack w="250px" bg="white" h="100vh" p={4} spacing={6} align="stretch">
+    <VStack w="250px" bg="gray" h="100vh" p={4} spacing={6} align="stretch">
       {menuItems.map((item) => (
         <Box
           key={item.label}
@@ -46,7 +47,7 @@ const HomePage = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
  const toast = useToast();
- 
+ const navigate = useNavigate();
   useEffect(() => {
     fetchorders()
   }, []);
@@ -84,15 +85,23 @@ const fetchorders = () =>{
     <Flex h="100vh" bg="white" color="black">
       <Sidebar selected={selected} onSelect={setSelected} />
 
-      <Box flex="1" p={6}>
-        <Flex justify="flex-end" mb={4}>
-          <Menu>
-            <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
-            <MenuList>
-              <MenuItem>View Profile</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </MenuList>
-          </Menu>
+      <Box flex="1" p={6} >
+        <Flex justify="flex-end" mb={4} p={5}  bg="gray">
+        <Menu>
+              <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
+              <MenuList>
+                <MenuItem  onClick={() => navigate("/seller/profile")}> View Profile</MenuItem>
+                <MenuItem
+  onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }}
+>
+  Logout
+</MenuItem>
+              </MenuList>
+            </Menu>
         </Flex>
 
         <Text fontSize="2xl" mb={6}>Orders</Text>

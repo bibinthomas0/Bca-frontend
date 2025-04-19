@@ -31,6 +31,7 @@ const Sidebar = ({ selected, onSelect }) => {
     { label: "See Orders", path: "/seller/home" },
     { label: "Product Listing", path: "/seller/product" },
     { label: "Enquiries", path: "/seller/enquiries" },
+    { label: "Help & Support", path: "/seller/help" },
   ];
 
   const handleSelect = (item) => {
@@ -39,7 +40,7 @@ const Sidebar = ({ selected, onSelect }) => {
   };
 
   return (
-    <VStack w="250px" bg="white" h="100vh" p={4} spacing={6} align="stretch">
+    <VStack w="250px" bg="gray" h="100vh" p={4} spacing={6} align="stretch">
       {menuItems.map((item) => (
         <Box
           key={item.label}
@@ -146,7 +147,21 @@ const REACT_APP_CLOUDINARY_UPLOAD_PRESET = "pafqnehk";
   };
   
   const addProduct = async () => {
+
+
     try {
+      if (!newProduct.title.trim()) {
+        return toast({ title: "Title is required", status: "warning" });
+      }
+      if (!newProduct.description.trim()) {
+        return toast({ title: "Description is required", status: "warning" });
+      }
+      if (!newProduct.price || isNaN(newProduct.price) || Number(newProduct.price) <= 0) {
+        return toast({ title: "Price must be a valid number greater than 0", status: "warning" });
+      }
+      if (!newProduct.stock || isNaN(newProduct.stock) || Number(newProduct.stock) <= 0) {
+        return toast({ title: "Stock must be a valid non-negative number", status: "warning" });
+      }
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
         if (uploadedImageUrl) {
@@ -196,7 +211,7 @@ const REACT_APP_CLOUDINARY_UPLOAD_PRESET = "pafqnehk";
     <Sidebar selected={selected} onSelect={setSelected} />
 
     <Box flex="1" p={6}>
-      <Flex justify="space-between" mb={4}>
+      <Flex justify="space-between" p={6} mb={4} bg="gray">
         <Button colorScheme="blue" onClick={() => setIsCategoryModalOpen(true)}>
           Add Category
         </Button>
@@ -204,12 +219,20 @@ const REACT_APP_CLOUDINARY_UPLOAD_PRESET = "pafqnehk";
           Add Product
         </Button>
         <Menu>
-          <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
-          <MenuList>
-            <MenuItem>View Profile</MenuItem>
-            <MenuItem>Logout</MenuItem>
-          </MenuList>
-        </Menu>
+              <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
+              <MenuList>
+                <MenuItem  onClick={() => navigate("/seller/profile")}> View Profile</MenuItem>
+                <MenuItem
+  onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }}
+>
+  Logout
+</MenuItem>
+              </MenuList>
+            </Menu>
       </Flex>
 
       <Text fontSize="2xl" mb={6}>Products</Text>

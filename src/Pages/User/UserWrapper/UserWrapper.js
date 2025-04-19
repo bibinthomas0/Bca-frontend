@@ -16,6 +16,11 @@ import SellerEnquiry from "../Home/Sellerenquiry";
 import apiClient from "../Auth/AxiosInstance"
 import Adminsellers from "../Admin/AdminSellers"
 import AdminBuyers from "../Admin/Adminbuyers";
+import Profile from "../Home/ProfilePage"
+import BuyerProfile from "../Buyer/BuyerProfile";
+import BuyerHelpAndSupport from "../Buyer/BuyerHelpAndSupport";
+import HelpAndSupport from "../Home/HelpAndSupport";
+import AdminHelpAndSupport from "../Admin/AdminHelpAndSupport";
 
 const UserWrapper = () => {
   const navigate = useNavigate();
@@ -44,6 +49,8 @@ const UserWrapper = () => {
     <>
       <LoginNav />
       <Routes>
+      <Route path="/buyer/profile" element={<BuyerProfile />} />
+      <Route path="/seller/profile" element={<Profile />} />
         <Route path="/buyer/home" element={<BuyerHomePage />} />
         <Route path="/buyer/cart" element={<BuyerCart />} />
         <Route path="/buyer/orders" element={<BuyerOrders />} />
@@ -53,6 +60,9 @@ const UserWrapper = () => {
         <Route path="/seller/home" element={<HomePage />} />
         <Route path="/seller/product" element={<Seller_product />} />
         <Route path="/seller/enquiries" element={<SellerEnquiry />} />
+        <Route path="/buyer/help" element={<BuyerHelpAndSupport />} />
+        <Route path="/seller/help" element={<HelpAndSupport />} />
+        <Route path="/admin/help" element={<AdminHelpAndSupport />} />
       </Routes>
     </>
   );

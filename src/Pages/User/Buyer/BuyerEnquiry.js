@@ -13,6 +13,7 @@ const Sidebar = ({ selected, onSelect }) => {
     { label: "My Orders", path: "/buyer/orders" },
     { label: "My Cart", path: "/buyer/cart" },
     { label: "Enquiries", path: "/buyer/enquiries" },
+    { label: "Help & Support", path: "/buyer/support" },
   ];
 
   const handleSelect = (item) => {
@@ -43,7 +44,7 @@ const BuyerEnquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
   const [selected, setSelected] = useState("Enquiries");
   const toast = useToast();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchEnquiries = async () => {
       try {
@@ -69,12 +70,20 @@ const BuyerEnquiry = () => {
         <Flex justify="space-between" mb={4}>
           <Text fontSize="2xl" fontWeight="bold">My Enquiries</Text>
           <Menu>
-            <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
-            <MenuList>
-              <MenuItem>View Profile</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </MenuList>
-          </Menu>
+              <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
+              <MenuList>
+                <MenuItem  onClick={() => navigate("/buyer/profile")}> View Profile</MenuItem>
+                <MenuItem
+  onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }}
+>
+  Logout
+</MenuItem>
+              </MenuList>
+            </Menu>
         </Flex>
 
         {enquiries.length === 0 ? (

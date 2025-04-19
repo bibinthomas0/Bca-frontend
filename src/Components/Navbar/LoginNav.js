@@ -9,10 +9,10 @@ function LoginNav() {
 
   return (
 <>
-<Stack  height={"100px"}
+<Stack  height={"150px"}
  align={"center"} 
                 justify={"center"}  color={"black"}>
-                <Avatar src="https://i.ibb.co/kVPZT0DB/Screenshot-2025-03-16-033115.png" height={'100px'} width={'300px'}/>
+                <Avatar src="https://i.ibb.co/Y4YGrNxV/Screenshot-2025-04-08-224731.png" height={'100px'} width={'700px'}/>
 
 </Stack>
 </>

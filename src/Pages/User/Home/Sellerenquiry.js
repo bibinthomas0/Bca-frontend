@@ -18,6 +18,7 @@ const Sidebar = ({ selected, onSelect }) => {
       { label: "See Orders", path: "/seller/home" },
       { label: "Product Listing", path: "/seller/product" },
       { label: "Enquiries", path: "/seller/enquiries" },
+      { label: "Help & Support", path: "/seller/help" },
     ];
 
     const handleSelect = (item) => {
@@ -26,7 +27,7 @@ const Sidebar = ({ selected, onSelect }) => {
     };
 
     return (
-      <VStack w="250px" bg="white" h="100vh" p={4} spacing={6} align="stretch">
+      <VStack w="250px" bg="gray" h="100vh" p={4} spacing={6} align="stretch">
         {menuItems.map((item) => (
           <Box
             key={item.label}
@@ -48,7 +49,7 @@ const SellerEnquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
   const [selected, setSelected] = useState("Enquiries");
   const toast = useToast();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchEnquiries = async () => {
       try {
@@ -98,13 +99,21 @@ const SellerEnquiry = () => {
       <Flex h="calc(100vh - 64px)" bg="white" color="black">
         <Sidebar selected={selected} onSelect={setSelected} />
         <Box flex="1" p={6} overflowY="auto">
-          <Flex justify="space-between" mb={4}>
+          <Flex justify="space-between" mb={4} bg="gray" p={6}>
             <Text fontSize="2xl" fontWeight="bold">My Enquiries</Text>
             <Menu>
               <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
               <MenuList>
-                <MenuItem>View Profile</MenuItem>
-                <MenuItem>Logout</MenuItem>
+                <MenuItem  onClick={() => navigate("/seller/profile")}> View Profile</MenuItem>
+                <MenuItem
+  onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }}
+>
+  Logout
+</MenuItem>
               </MenuList>
             </Menu>
           </Flex>

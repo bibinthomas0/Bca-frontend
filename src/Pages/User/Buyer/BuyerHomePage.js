@@ -24,9 +24,10 @@ const Sidebar = ({ selected, onSelect }) => {
   const navigate = useNavigate();
   const menuItems = [
     { label: "Products", path: "/buyer/home" },
-    { label: "My orders", path: "/buyer/orders" },
+    { label: "My Orders", path: "/buyer/orders" },
     { label: "My Cart", path: "/buyer/cart" },
     { label: "Enquiries", path: "/buyer/enquiries" },
+    { label: "Help & Support", path: "/buyer/support" },
   ];
 
   const handleSelect = (item) => {
@@ -130,7 +131,7 @@ const BuyerHomePage = () => {
     try {
       await apiClient.put("/api/cart/update/", { product: product.id, quantity: 1 });
       setCartCount(cartCount + 1);
-      toast({ title: "Product added to cart", status: "success", duration: 2000 });
+      toast({ title: "Product added to cart. Please update quantity in the cart", status: "success", duration: 2000 });
     } catch (error) {
       toast({ title: error.response?.data?.error || "Error adding to cart", status: "error" });
     }
@@ -198,8 +199,16 @@ const BuyerHomePage = () => {
             <Menu>
               <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
               <MenuList>
-                <MenuItem>View Profile</MenuItem>
-                <MenuItem>Logout</MenuItem>
+                <MenuItem  onClick={() => navigate("/buyer/profile")}> View Profile</MenuItem>
+                <MenuItem
+  onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }}
+>
+  Logout
+</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
@@ -267,9 +276,9 @@ const BuyerHomePage = () => {
       />
                 </ModalBody>
                 <ModalFooter>
-                <Button colorScheme="green" onClick={() => handleAddToCart(selectedProduct)} isDisabled={selectedProduct.stock === 0}>
+                {/* <Button colorScheme="green" onClick={() => handleAddToCart(selectedProduct)} isDisabled={selectedProduct.stock === 0}>
                     {selectedProduct.stock === 0 ? "Out of Stock" : "Add to cart"}
-                  </Button>
+                  </Button> */}
                   <Button colorScheme="blue" onClick={handleCreateEnquiry} ml={3}>
         Create Enquiry
       </Button>

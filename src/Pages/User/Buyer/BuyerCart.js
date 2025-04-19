@@ -9,9 +9,10 @@ const Sidebar = ({ selected, onSelect }) => {
   const navigate = useNavigate();
   const menuItems = [
     { label: "Products", path: "/buyer/home" },
-    { label: "My orders", path: "/buyer/orders" },
+    { label: "My Orders", path: "/buyer/orders" },
     { label: "My Cart", path: "/buyer/cart" },
     { label: "Enquiries", path: "/buyer/enquiries" },
+    { label: "Help & Support", path: "/buyer/support" },
   ];
 
   const handleSelect = (item) => {
@@ -46,6 +47,7 @@ const BuyerCart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [paymentDetails, setPaymentDetails] = useState({});
+  
   useEffect(() => {
 
 
@@ -119,13 +121,21 @@ const BuyerCart = () => {
       ) : (
         <Box flex="1" p={6}>
           <Flex justify="flex-end" mb={4}>
-            <Menu>
-              <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
-              <MenuList>
-                <MenuItem>View Profile</MenuItem>
-                <MenuItem>Logout</MenuItem>
-              </MenuList>
-            </Menu>
+                <Menu>
+                          <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
+                          <MenuList>
+                            <MenuItem  onClick={() => navigate("/buyer/profile")}> View Profile</MenuItem>
+                            <MenuItem
+              onClick={() => {
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+                navigate("/"); 
+              }}
+            >
+              Logout
+            </MenuItem>
+                          </MenuList>
+                        </Menu>
           </Flex>
 
           <Text fontSize="2xl" mb={6}>Your Cart</Text>

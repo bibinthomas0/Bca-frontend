@@ -14,6 +14,7 @@ const Sidebar = ({ selected, onSelect }) => {
       { label: "My Orders", path: "/buyer/orders" },
       { label: "My Cart", path: "/buyer/cart" },
       { label: "Enquiries", path: "/buyer/enquiries" },
+      { label: "Help & Support", path: "/buyer/support" },
     ];
   
     const handleSelect = (item) => {
@@ -48,6 +49,7 @@ const BuyerOrders = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure();
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     apiClient.get("/api/buyer/orders/")
@@ -110,12 +112,20 @@ const BuyerOrders = () => {
         <Flex justify="space-between" mb={4}>
           <Text fontSize="2xl">My Orders</Text>
           <Menu>
-            <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
-            <MenuList>
-              <MenuItem>View Profile</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </MenuList>
-          </Menu>
+              <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
+              <MenuList>
+                <MenuItem  onClick={() => navigate("/buyer/profile")}> View Profile</MenuItem>
+                <MenuItem
+  onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }}
+>
+  Logout
+</MenuItem>
+              </MenuList>
+            </Menu>
         </Flex>
 
         <VStack spacing={4} align="stretch">

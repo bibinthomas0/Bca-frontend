@@ -86,8 +86,34 @@ function Register() {
           <Input type="password" name="password" value={formData.password} onChange={handleChange} />
         </FormControl>
 
-        <Checkbox name="is_seller" isChecked={formData.is_seller} onChange={handleChange}>Seller</Checkbox>
-        <Checkbox name="is_buyer" isChecked={formData.is_buyer} onChange={handleChange}>Buyer</Checkbox>
+        <Checkbox
+  name="is_seller"
+  isChecked={formData.is_seller}
+  onChange={() =>
+    setFormData({
+      ...formData,
+      is_seller: true,
+      is_buyer: false,
+    })
+  }
+>
+  Seller
+</Checkbox>
+
+<Checkbox
+  name="is_buyer"
+  isChecked={formData.is_buyer}
+  onChange={() =>
+    setFormData({
+      ...formData,
+      is_seller: false,
+      is_buyer: true,
+    })
+  }
+>
+  Buyer
+</Checkbox>
+
 
         <FormControl isRequired>
           <FormLabel>Pincode</FormLabel>
