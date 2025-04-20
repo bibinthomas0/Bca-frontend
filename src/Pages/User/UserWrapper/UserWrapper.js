@@ -21,6 +21,7 @@ import BuyerProfile from "../Buyer/BuyerProfile";
 import BuyerHelpAndSupport from "../Buyer/BuyerHelpAndSupport";
 import HelpAndSupport from "../Home/HelpAndSupport";
 import AdminHelpAndSupport from "../Admin/AdminHelpAndSupport";
+import BuyerWishlist from "../Buyer/BuyerWishlist";
 
 const UserWrapper = () => {
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ const UserWrapper = () => {
         <Route path="/buyer/help" element={<BuyerHelpAndSupport />} />
         <Route path="/seller/help" element={<HelpAndSupport />} />
         <Route path="/admin/help" element={<AdminHelpAndSupport />} />
+        <Route path="/buyer/wishlist" element={<BuyerWishlist />} />
       </Routes>
     </>
   );

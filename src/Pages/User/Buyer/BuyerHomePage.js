@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { 
   Box, Button, Text, Flex,Menu,MenuItem,MenuButton,MenuList, VStack,Card, CardHeader, CardBody, CardFooter,Image,Stack,Heading,Divider,ButtonGroup,Input,IconButton,Badge
 } from "@chakra-ui/react";
+import { Heart } from 'lucide-react';
 import {
     Select,
   useDisclosure,
@@ -25,9 +26,10 @@ const Sidebar = ({ selected, onSelect }) => {
   const menuItems = [
     { label: "Products", path: "/buyer/home" },
     { label: "My Orders", path: "/buyer/orders" },
+    { label: "My Wishlist", path: "/buyer/wishlist" },
     { label: "My Cart", path: "/buyer/cart" },
     { label: "Enquiries", path: "/buyer/enquiries" },
-    { label: "Help & Support", path: "/buyer/support" },
+    { label: "Help & Support", path: "/buyer/help" },
   ];
 
   const handleSelect = (item) => {
@@ -71,6 +73,7 @@ const BuyerHomePage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [cartCount, setCartCount] = useState(0);
+    const [wishlist, setWishlist] = useState([]);
     const navigate = useNavigate();
 
   useEffect(() => {
@@ -136,6 +139,27 @@ const BuyerHomePage = () => {
       toast({ title: error.response?.data?.error || "Error adding to cart", status: "error" });
     }
   };
+  const AddtoWishlist = async (productId) => { 
+    try {
+      await apiClient.post("/api/wishlist/", { product: productId });
+      setWishlist((prev) => [...prev, productId]);
+  
+      toast({
+        title: "Added to wishlist", 
+        status: "info",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error adding to wishlist", 
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
+  
   
     const filteredProducts = selectedCategory === 'all'
       ? products
@@ -232,20 +256,32 @@ const BuyerHomePage = () => {
                     </Stack>
                   </CardBody>
                   <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing={4}>
-                    <Button colorScheme="green" onClick={() => handleAddToCart(product)} isDisabled={product.stock === 0}>
-                    {product.stock === 0 ? "Out of Stock" : "Add to cart"}
-                  </Button>
-                      <Button colorScheme="blue" onClick={() => {
-                        setSelectedProduct(product);
-                        onOpen();
-                      }}>View More Details</Button>
+                  <CardFooter justifyContent="space-between" alignItems="center">
+  <ButtonGroup spacing={4}>
+    <Button colorScheme="green" onClick={() => handleAddToCart(product)} isDisabled={product.stock === 0}>
+      {product.stock === 0 ? "Out of Stock" : "Add to cart"}
+    </Button>
+    <Button colorScheme="blue" onClick={() => {
+      setSelectedProduct(product);
+      onOpen();
+    }}>
+      View More Details
+    </Button>
+  </ButtonGroup>
 
-                      
-                    </ButtonGroup>
-                     
-                  </CardFooter>
+  <IconButton
+  icon={<Heart fill={wishlist.includes(product.id) ? "red" : "none"} color="red" />}
+  variant="ghost"
+  aria-label="Add to Wishlist"
+  onClick={() => {
+    if (!wishlist.includes(product.id)) {
+      AddtoWishlist(product.id);
+    }
+  }}
+/>
+
+</CardFooter>
+
                 </Card>
               ))}
             </Flex>
@@ -266,6 +302,7 @@ const BuyerHomePage = () => {
                   />
                   <Text><strong>Seller:</strong> {selectedProduct.seller}</Text>
                   <Text><strong>Stock:</strong> {selectedProduct.stock}</Text>
+                  <Text color="red.600" fontSize="2x">NB - They payment will be collected when the product is delivered.</Text>
                   <Input
         type="number"
         placeholder="Enter quantity for enqiury"

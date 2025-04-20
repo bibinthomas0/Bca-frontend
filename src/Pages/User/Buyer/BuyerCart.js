@@ -10,9 +10,10 @@ const Sidebar = ({ selected, onSelect }) => {
   const menuItems = [
     { label: "Products", path: "/buyer/home" },
     { label: "My Orders", path: "/buyer/orders" },
+    { label: "My Wishlist", path: "/buyer/wishlist" },
     { label: "My Cart", path: "/buyer/cart" },
     { label: "Enquiries", path: "/buyer/enquiries" },
-    { label: "Help & Support", path: "/buyer/support" },
+    { label: "Help & Support", path: "/buyer/help" },
   ];
 
   const handleSelect = (item) => {
