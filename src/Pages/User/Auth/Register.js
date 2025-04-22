@@ -37,6 +37,13 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = validateForm();
+    if (errors.length > 0) {
+      errors.forEach(err =>
+        toast({ title: err, status: 'error', duration: 5000, isClosable: true })
+      );
+      return;
+    }
 
     const requestData = { ...formData };
 
@@ -60,6 +67,49 @@ function Register() {
       });
     }
   };
+
+
+  const validateForm = () => {
+    const errors = [];
+  
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^\d{10}$/;
+    const pincodePattern = /^\d{6}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[^\s]{8,}$/;
+  
+    if (!emailPattern.test(formData.email) || !formData.email.endsWith('.com')) {
+      errors.push("Invalid email format. Must include '@' and end with '.com'");
+    }
+  
+    if (!phonePattern.test(formData.phone_number)) {
+      errors.push("Phone number must be 10 digits and contain only numbers.");
+    }
+  
+    if (!pincodePattern.test(formData.pincode)) {
+      errors.push("Pincode must be a 6-digit number.");
+    }
+  
+    if (!passwordPattern.test(formData.password)) {
+      errors.push("Password must be strong: include uppercase, lowercase, number, special character and no spaces.");
+    }
+
+    const dob = new Date(formData.date_of_birth);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+    const hasBirthdayPassed =
+      today.getMonth() > dob.getMonth() ||
+      (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+  
+    const actualAge = hasBirthdayPassed ? age : age - 1;
+  
+    if (isNaN(actualAge) || actualAge < 18) {
+      errors.push("You must be at least 18 years old to register.");
+    }
+  
+    return errors;
+  };
+  
+
 
   
   return (
