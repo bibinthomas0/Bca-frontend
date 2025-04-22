@@ -24,7 +24,7 @@ function Register() {
     company_name: '',
     company_address: '',
     gstin: '',
-    language: ''
+
   });
 
   const handleChange = (e) => {
@@ -51,7 +51,7 @@ function Register() {
       delete requestData.company_name;
       delete requestData.company_address;
       delete requestData.gstin;
-      delete requestData.language;
+   
     }
 
     try {
@@ -202,10 +202,7 @@ function Register() {
               <Input name="gstin" value={formData.gstin} onChange={handleChange} />
             </FormControl>
 
-            <FormControl>
-              <FormLabel>Language</FormLabel>
-              <Input name="language" value={formData.language} onChange={handleChange} />
-            </FormControl>
+        
           </>
         )}
 
