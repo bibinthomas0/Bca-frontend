@@ -26,6 +26,7 @@ import { Switch } from '@chakra-ui/react'
 
 
 function Login() {
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -71,7 +72,12 @@ function Login() {
       }
     }
   };
-
+  const handleCaptchaChange = (value) => {
+    if (value) {
+      setCaptchaVerified(true);
+    }
+  };
+  
 
 const navigateregister = () =>{
 
@@ -97,18 +103,25 @@ const navigateregister = () =>{
             <Input type="password" onChange={(event) => setPassword(event.target.value)} />
           </FormControl>
 
-          <ReCAPTCHA sitekey={"6LfddA4pAAAAAJ7YSN-7v_2qgtZ4zLeZuKu-S6jM"} />
+          <ReCAPTCHA
+  sitekey="6LfddA4pAAAAAJ7YSN-7v_2qgtZ4zLeZuKu-S6jM"
+  onChange={handleCaptchaChange}
+/>
+
 
           <Stack align={"center"}>
-            <Button
-              bg={"green.400"}
-              width={"60%"}
-              color={"white"}
-              _hover={{ bg: "green.500" }}
-              onClick={handleLoginSubmit}
-            >
-              Log In
-            </Button>
+          {captchaVerified && (
+  <Button
+    bg={"green.400"}
+    width={"60%"}
+    color={"white"}
+    _hover={{ bg: "green.500" }}
+    onClick={handleLoginSubmit}
+  >
+    Log In
+  </Button>
+)}
+
             <Button
               bg={"blue.400"}
               width={"60%"}
