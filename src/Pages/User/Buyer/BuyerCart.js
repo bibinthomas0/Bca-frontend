@@ -64,7 +64,48 @@ const BuyerCart = () => {
       console.error("Error fetching cart:", error);
     }
   };
-
+  const validatePaymentDetails = () => {
+    if (paymentMethod === "upi") {
+      const upiRegex = /^[\w.-]+@[\w.-]+$/;
+      if (!paymentDetails.upi || !upiRegex.test(paymentDetails.upi)) {
+        toast({ title: "Invalid UPI ID", status: "error", duration: 3000, isClosable: true });
+        return false;
+      }
+    }
+  
+    if (paymentMethod === "bank_transfer") {
+      const accountNumberRegex = /^\d{9,18}$/;
+      const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+      if (!paymentDetails.accountNumber || !accountNumberRegex.test(paymentDetails.accountNumber)) {
+        toast({ title: "Invalid Account Number", status: "error", duration: 3000, isClosable: true });
+        return false;
+      }
+      if (!paymentDetails.ifsc || !ifscRegex.test(paymentDetails.ifsc)) {
+        toast({ title: "Invalid IFSC Code", status: "error", duration: 3000, isClosable: true });
+        return false;
+      }
+    }
+  
+    if (paymentMethod === "card") {
+      const cardNumberRegex = /^\d{16}$/;
+      const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+      const cvvRegex = /^\d{3}$/;
+      if (!paymentDetails.cardNumber || !cardNumberRegex.test(paymentDetails.cardNumber)) {
+        toast({ title: "Invalid Card Number", status: "error", duration: 3000, isClosable: true });
+        return false;
+      }
+      if (!paymentDetails.expiry || !expiryRegex.test(paymentDetails.expiry)) {
+        toast({ title: "Invalid Expiry Date (MM/YY)", status: "error", duration: 3000, isClosable: true });
+        return false;
+      }
+      if (!paymentDetails.cvv || !cvvRegex.test(paymentDetails.cvv)) {
+        toast({ title: "Invalid CVV", status: "error", duration: 3000, isClosable: true });
+        return false;
+      }
+    }
+  
+    return true;
+  };
   const updateQuantity = async (productId, newQuantity) => {
     try {
       const response = await apiClient.put("/api/cart/update/", { product: productId, quantity: newQuantity });
@@ -99,6 +140,7 @@ const BuyerCart = () => {
 
   
   const createOrder = async () => {
+    if (!validatePaymentDetails()) return;
     try {
       const response = await apiClient.post("/api/order/create/");
       toast({ title: response.data.message, status: "success", duration: 3000, isClosable: true });

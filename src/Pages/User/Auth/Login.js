@@ -33,6 +33,18 @@ function Login() {
   const navigate = useNavigate();
   const toast = useToast();
 
+  useEffect(() => {
+    const access = localStorage.getItem("access_token");
+    const refresh = localStorage.getItem("refresh_token");
+    const user_type = localStorage.getItem("user_type");
+  
+    if (access && refresh && user_type) {
+      if (user_type === "admin") navigate("/admin/home");
+      else if (user_type === "buyer") navigate("/buyer/home");
+      else if (user_type === "seller") navigate("/seller/home");
+    } 
+  }, []);
+
   const handleLoginSubmit = async () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/login/", { username, password });
@@ -42,6 +54,7 @@ function Login() {
       // Store tokens in localStorage
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
+      localStorage.setItem("user_type", user_type);
 
       // Dispatch user data to Redux
       dispatch(
