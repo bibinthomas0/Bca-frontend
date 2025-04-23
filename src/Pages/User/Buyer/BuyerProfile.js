@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
     Box, Button, Input, FormLabel, VStack, useToast, Heading, Checkbox,
-    CheckboxGroup, Stack, Flex, Spinner
+    CheckboxGroup, Stack, Flex, Spinner,Text
   } from "@chakra-ui/react"; 
 import { useNavigate } from "react-router-dom";
 import apiClient from "../Auth/AxiosInstance";
@@ -25,6 +25,7 @@ const Sidebar = ({ selected, onSelect }) => {
   
     return (
       <VStack w="250px" bg="beige" h="100vh" p={4} spacing={6} align="stretch">
+         <Text fontSize="2xl"  my={6}>BUYER</Text>
         {menuItems.map((item) => (
           <Box
             key={item.label}
@@ -124,7 +125,7 @@ const BuyerProfile = () => {
       <Box bg="white" p={8} borderRadius="md" shadow="md" maxW="600px" mx="auto">
 
         <Heading size="lg" mb={6}>
-          Profile
+          Buyer Profile
         </Heading>
         <VStack spacing={4} align="stretch">
           <Box>

@@ -9,11 +9,10 @@ import apiClient from "../Auth/AxiosInstance";
 const Sidebar = ({ selected, onSelect }) => {
   const navigate = useNavigate();
   const menuItems = [
-    { label: "Products", path: "/buyer/home" },
-    { label: "My Orders", path: "/buyer/orders" },
-    { label: "My Cart", path: "/buyer/cart" },
-    { label: "Enquiries", path: "/buyer/enquiries" },
-    { label: "Help & Support", path: "/buyer/support" },
+    { label: "Sellers", path: "/admin/home" },
+    { label: "buyers", path: "/admin/buyers" },
+    {label: "Help and Support", path: "/admin/help" },  
+   
   ];
 
   const handleSelect = (item) => {
@@ -23,6 +22,7 @@ const Sidebar = ({ selected, onSelect }) => {
 
   return (
     <VStack w="250px" bg="beige" h="100vh" p={4} spacing={6} align="stretch">
+       <Text fontSize="2xl"  my={6}>ADMIN</Text>
       {menuItems.map((item) => (
         <Box
           key={item.label}
@@ -41,12 +41,13 @@ const Sidebar = ({ selected, onSelect }) => {
 };
 
 const AdminHelpAndSupport = () => {
+   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [replies, setReplies] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [replySubmitting, setReplySubmitting] = useState({});
-  const [selected, setSelected] = useState("Help & Support");
+  const [selected, setSelected] = useState("Help and Support");
   const toast = useToast();
 
   useEffect(() => {
@@ -137,13 +138,11 @@ const AdminHelpAndSupport = () => {
       <Box flex="1" p={6} overflowY="auto">
         <Flex justify="space-between" mb={4}>
           <Text fontSize="2xl" fontWeight="bold">Help & Support</Text>
-          <Menu>
-            <MenuButton as={Button} colorScheme="blue">Profile</MenuButton>
-            <MenuList>
-              <MenuItem>View Profile</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </MenuList>
-          </Menu>
+          <Button as={Button}   onClick={() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/"); 
+  }} colorScheme="blue">Logout</Button>
         </Flex>
 
   

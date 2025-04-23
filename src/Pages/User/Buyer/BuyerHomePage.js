@@ -39,6 +39,7 @@ const Sidebar = ({ selected, onSelect }) => {
 
   return (
     <VStack w="250px" bg="beige" h="100vh" p={4} spacing={6} align="stretch">
+      <Text fontSize="2xl"  my={6}>BUYER</Text>
       {menuItems.map((item) => (
         <Box
           key={item.label}
@@ -241,6 +242,7 @@ const BuyerHomePage = () => {
   
           <Box overflowY="auto" flex={1} p={4} maxH="calc(100vh - 150px)">
             <Flex wrap="wrap" justify="center" gap={6}>
+              {filteredProducts.length === 0 && <Text color={"red"}>No products found in the selected pincodes. Try changing to new pincode from your profile....🚧</Text>}
               {filteredProducts.map((product) => (
                 <Card key={product.id} maxW="sm" boxShadow="md" backgroundColor={"beige"}>
                   <CardBody>
@@ -284,6 +286,8 @@ const BuyerHomePage = () => {
 
                 </Card>
               ))}
+
+
             </Flex>
           </Box>
   

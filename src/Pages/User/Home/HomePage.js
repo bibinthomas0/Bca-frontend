@@ -23,6 +23,7 @@ const Sidebar = ({ selected, onSelect }) => {
 
   return (
     <VStack w="250px" bg="gray" h="100vh" p={4} spacing={6} align="stretch">
+       <Text fontSize="2xl"  my={6}>SELLER</Text>
       {menuItems.map((item) => (
         <Box
           key={item.label}
